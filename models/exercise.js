@@ -43,7 +43,7 @@ const WorkoutSchema = new Schema({
 })
 
 // save schema to variable and access via mongoose
-const Workout = mongoose.model("Workout", WorkoutSchema);
+const Workout = mongoose.model("workout", WorkoutSchema);
 
-module.exports = Workout;
+module.exports = workout;
 
