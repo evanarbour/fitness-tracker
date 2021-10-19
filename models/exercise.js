@@ -4,7 +4,7 @@ const mongoose = require("mongoose")
 // Create variable for Workout model 
 const Schema = mongoose.Schema;
 
-
+// Workout Schema
 const WorkoutSchema = new Schema({
     day: {
         type: Date, 
@@ -42,7 +42,7 @@ const WorkoutSchema = new Schema({
     ]
 })
 
-
+// save schema to variable and access via mongoose
 const Workout = mongoose.model("Workout", WorkoutSchema);
 
 module.exports = Workout;
