@@ -15,7 +15,7 @@ router.get("/api/workouts", (req, res) => {
     });
 });
 
-// POST request 
+// POST request to the db
 router.post("/api/workouts", ({ body }, res) => {
     db.create(body)
     .then(dbData => {
@@ -23,6 +23,28 @@ router.post("/api/workouts", ({ body }, res) => {
     })
     .catch(err => {
         res.status(400).json(err);
+    });
+});
+
+// GET route for 'getWorkoutsInRange' function
+router.get("/api/workouts/range", (req, res) => {
+    db.find({})
+    .then(dbData =>  {
+        res.json(dbData);
+    })
+    .catch(err => {
+        res.status(400).json(err);
+    });
+});
+
+// PUT route to update db
+router.put("/api/workouts/:id", ({ body, params}, res) => {
+    db.findByIdAndUpdate(params.id, { $push: { exercise: body } })
+    .then(dbData => {
+        res.json(dbData);
+    })
+    .catch(err => {
+        res.status(400).json.apply(err);
     });
 });
 
