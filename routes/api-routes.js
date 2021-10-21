@@ -5,24 +5,25 @@ module.exports = (app) => {
 
     // GET request for all workouts
     app.get("/api/workouts", (req, res) => {
-    db.Exercise.find({}, (err, data) => {
-            if(err){
-            console.log(err);
-            } else {
-            res.json(data)
-            }
-        });
+    db.Exercise.aggregate([
+        {
+          $addFields: {
+            totalDuration: { $sum: "$exercises.duration" }
+          }
+        }
+    ])
+    .then((dbWorkouts) => {
+        console.log(dbWorkouts);
+        res.json(dbWorkouts)
+    })
+    .catch((err)=> {
+        res.json(err);
+    })
     });
 
-    app.get("/api/workouts", (req, res) => {
-        db.Exercise.aggregate([
-            {
-              $addFields: {
-                totalDuration: { $sum: "$duration" }
-              }
-            }
-        ])
-    });
+    // app.get("/api/workouts/range", (req, res) => {
+       
+    // });
 
     // PUT route to update db: add exercise, grab id parameter, push to model
     app.put("/api/workouts/:id", ({ body, params}, res) => {
@@ -42,13 +43,20 @@ module.exports = (app) => {
 
     // GET route for 'getWorkoutsInRange' function
     app.get("/api/workouts/range", (req, res) => {
-        db.Exercise.find({}, (err, data) => {
-            if(err){
-            console.log(err);
-            } else {
-            res.json(data)
+        db.Exercise.aggregate([
+            {
+              $addFields: {
+                totalDuration: { $sum: "$exercises.duration" }
+              }
             }
-        });
+        ])
+        .then((dbWorkouts) => {
+            console.log(dbWorkouts);
+            res.json(dbWorkouts)
+        })
+        .catch((err)=> {
+            res.json(err);
+        })
     });
 
 };

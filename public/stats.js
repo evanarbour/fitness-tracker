@@ -1,6 +1,5 @@
 function calculateTotalWeight(data) {
   const totals = [];
-
   data.forEach((workout) => {
     const workoutTotal = workout.exercises.reduce((total, { type, weight }) => {
       if (type === 'resistance') {
@@ -8,25 +7,18 @@ function calculateTotalWeight(data) {
       }
       return total;
     }, 0);
-
     totals.push(workoutTotal);
   });
-
   return totals;
 }
-
-
-
 function populateChart(data) {
   const durations = data.map(({ totalDuration }) => totalDuration);
   const pounds = calculateTotalWeight(data);
-
   const line = document.querySelector('#canvas').getContext('2d');
   const bar = document.querySelector('#canvas2').getContext('2d');
-
   const labels = data.map(({ day }) => {
     const date = new Date(day);
-
+    console.log(date)
     // Use JavaScript's `Intl` object to help format dates
     return new Intl.DateTimeFormat('en-US', {
       weekday: 'short',
@@ -34,7 +26,6 @@ function populateChart(data) {
       day: 'numeric',
     }).format(date);
   });
-
   let lineChart = new Chart(line, {
     type: 'line',
     data: {
@@ -62,7 +53,6 @@ function populateChart(data) {
       },
     },
   });
-
   let barChart = new Chart(bar, {
     type: 'bar',
     data: {
@@ -108,6 +98,5 @@ function populateChart(data) {
     },
   });
 }
-
 // get all workout data from back-end
 API.getWorkoutsInRange().then(populateChart);
