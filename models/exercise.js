@@ -1,17 +1,17 @@
 // import Mongoose
 const mongoose = require("mongoose")
 
-// Create variable for Workout model 
+// Create variable for Exercise model 
 const Schema = mongoose.Schema;
 
 // Workout Schema
-const WorkoutSchema = new Schema({
+const ExerciseSchema = new Schema({
     day: {
         type: Date, 
         default: Date.now()
-    }, 
+    },
     exercises: [
-        {
+        { 
             name: {
                 type: String, 
                 trim: true,
@@ -37,13 +37,17 @@ const WorkoutSchema = new Schema({
             }, 
             reps: {
                 type: Number
+            },
+            totalDuration: {
+                type: Number, 
+                default: 0
             }
         }
     ]
 })
 
 // save schema to variable and access via mongoose
-const Workout = mongoose.model("workout", WorkoutSchema);
+const Exercise = mongoose.model("Exercise", ExerciseSchema);
 
-module.exports = Workout;
+module.exports = Exercise;
 

@@ -1,51 +1,54 @@
-// Import express router
-const router = require("express").Router();
-
 // Import workout model
-const db = require("../models/exercise");
+const db = require("../models");
 
-// GET request for all workouts
-router.get("/api/workouts", (req, res) => {
-    db.find({})
-    .then(dbData =>  {
-        res.json(dbData);
-    })
-    .catch(err => {
-        res.status(400).json(err);
+module.exports = (app) => {
+
+    // GET request for all workouts
+    app.get("/api/workouts", (req, res) => {
+    db.Exercise.find({}, (err, data) => {
+            if(err){
+            console.log(err);
+            } else {
+            res.json(data)
+            }
+        });
     });
-});
 
-// POST request to the db
-router.post("/api/workouts", ({ body }, res) => {
-    db.create(body)
-    .then(dbData => {
-        res.json(dbData);
-    })
-    .catch(err => {
-        res.status(400).json(err);
+    app.get("/api/workouts", (req, res) => {
+        db.Exercise.aggregate([
+            {
+              $addFields: {
+                totalDuration: { $sum: "$duration" }
+              }
+            }
+        ])
     });
-});
 
-// GET route for 'getWorkoutsInRange' function
-router.get("/api/workouts/range", (req, res) => {
-    db.find({})
-    .then(dbData =>  {
-        res.json(dbData);
-    })
-    .catch(err => {
-        res.status(400).json(err);
+    // PUT route to update db: add exercise, grab id parameter, push to model
+    app.put("/api/workouts/:id", ({ body, params}, res) => {
+        db.Exercise.findOneAndUpdate({ _id: params.id}, 
+                                    {$push: {exercises: body}},
+                                    updatedWorkout => {
+                                    res.json(updatedWorkout);
+        });
     });
-});
 
-// PUT route to update db
-router.put("/api/workouts/:id", ({ body, params}, res) => {
-    db.findByIdAndUpdate(params.id, { $push: { exercise: body } })
-    .then(dbData => {
-        res.json(dbData);
-    })
-    .catch(err => {
-        res.status(400).json.apply(err);
+    // POST request to the db
+    app.post("/api/workouts", (req, res) => {
+        db.Exercise.create({}).then(newWorkout => {
+            res.json(newWorkout);
+        });
     });
-});
 
-module.exports = router;
+    // GET route for 'getWorkoutsInRange' function
+    app.get("/api/workouts/range", (req, res) => {
+        db.Exercise.find({}, (err, data) => {
+            if(err){
+            console.log(err);
+            } else {
+            res.json(data)
+            }
+        });
+    });
+
+};
